@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "file-forge"
+version = "0.1.0"
+description = "A trustworthy CLI tool for file format conversion and image compression"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["cli", "file-conversion", "image-compression", "file-processing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+    "Topic :: Utilities",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "typer[all]>=0.9.0",           # CLI framework with rich support
+    "Pillow>=10.0.0",              # Image processing and conversion
+    "PyPDF2>=3.0.0",               # PDF manipulation
+    "python-docx>=1.0.0",          # Word document handling
+    "openpyxl>=3.1.0",             # Excel file handling
+    "pandas>=2.0.0",               # Data manipulation for CSV/Excel
+    "moviepy>=1.0.3",              # Video processing
+    "pydub>=0.25.1",               # Audio processing
+    "rich>=13.0.0",                # Beautiful terminal output
+    "pathlib>=1.0.1",              # Path handling
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.scripts]
+file-forge = "file_forge.main:app"
+
+[project.urls]
+Homepage = "https://github.com/Sujal-Gaha/file-forge"
+Repository = "https://github.com/Sujal-Gaha/file-forge"
+Issues = "https://github.com/Sujal-Gaha/file-forge/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["file_forge*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

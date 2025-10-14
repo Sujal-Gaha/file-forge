@@ -16,7 +16,7 @@ def get_file_size_readable(file_path: Path) -> str:
     Returns:
         Human-readable file size string
     """
-    size_bytes = file_path.stat().st_size
+    size_bytes = float(file_path.stat().st_size)
 
     for unit in ["B", "KB", "MB", "GB", "TB"]:
         if size_bytes < 1024.0:

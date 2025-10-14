@@ -5,8 +5,8 @@ from typing import Optional
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
-from file_forge.converters import document
 from file_forge.converters.image import ImageProcessor
+from file_forge.converters.document import DocumentProcessor
 
 app = typer.Typer(
     name="file-forge",
@@ -182,9 +182,9 @@ def convert_document(
             console=console,
         ) as progress:
             progress.add_task(description="Converting document...", total=None)
-            result_path = document.convert_document(
-                input_file, output_format, output_file
-            )
+            document = DocumentProcessor(input_file, output_file)
+
+            result_path = document.convert_document(output_format)
 
         console.print(
             f"[green]✓[/green] Document converted successfully: {result_path}"
@@ -213,7 +213,6 @@ def file_info(
 [cyan]Size:[/cyan] {file_size:,} bytes ({file_size / 1024:.2f} KB)
 [cyan]Type:[/cyan] {input_file.suffix}"""
 
-        # Additional info for images
         if input_file.suffix.lower() in [
             ".jpg",
             ".jpeg",
@@ -222,8 +221,6 @@ def file_info(
             ".webp",
             ".bmp",
         ]:
-            from PIL import Image
-
             with Image.open(input_file) as img:
                 info_text += (
                     f"\n[cyan]Dimensions:[/cyan] {img.width} x {img.height} pixels"

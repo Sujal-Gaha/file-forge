@@ -3,6 +3,7 @@ from typing import Optional, Any
 
 from PIL import Image
 
+
 class ImageProcessor:
     def __init__(
         self,
@@ -11,19 +12,18 @@ class ImageProcessor:
     ) -> None:
         """
         Initialize ImageProcessor
-        
+
         Args:
             input_path: Path to input image
             output_path: Optional output path
-            
+
         Returns:
             None
         """
         self.input_path = input_path
         self.output_path = output_path
         self.input_path_suffix = input_path.suffix.lower()
-        
-        
+
     def _resize_with_aspect_ratio(
         self,
         img: Image.Image,
@@ -42,13 +42,13 @@ class ImageProcessor:
             Resized PIL Image object
         """
         original_width, original_height = img.size
-        
+
         if max_width and max_height:
             width_ratio = max_width / original_width
             height_ratio = max_height / original_height
-            
+
             ratio = min(width_ratio, height_ratio)
-            
+
             new_width = int(original_width * ratio)
             new_height = int(original_height * ratio)
         elif max_width:
@@ -61,19 +61,18 @@ class ImageProcessor:
             new_height = max_height
         else:
             return img
-        
+
         return img.resize((new_width, new_height), Image.Resampling.LANCZOS)
-        
-    
+
     def _generate_output_path(
         self,
         output_format: Optional[str],
         angle: Optional[int],
         dimension_str: Optional[str],
-    ) -> Path:  
+    ) -> Path:
         stem = self.input_path.stem
         suffix = self.input_path.suffix
-        
+
         if output_format:
             return self.input_path.with_suffix(f".{output_format}")
         elif dimension_str:
@@ -82,8 +81,7 @@ class ImageProcessor:
             return self.input_path.parent / f"{stem}_rotated_{angle}{suffix}"
         else:
             return self.input_path.parent / f"{stem}_compressed{suffix}"
-            
-        
+
     def convert_image(self, output_format: str, quality: int = 95) -> Path:
         """
         Convert image to a different format
@@ -99,7 +97,7 @@ class ImageProcessor:
 
         if self.output_path is None:
             self.output_path = self._generate_output_path(output_format, None, None)
-            
+
         with Image.open(self.input_path) as img:
             if output_format in ["jpg", "jpeg"] and img.mode in ["RGBA", "LA", "P"]:
                 rgb_img = Image.new("RGB", img.size, (255, 255, 255))
@@ -109,16 +107,16 @@ class ImageProcessor:
                     img, mask=img.split()[-1] if img.mode in ["RGBA", "LA"] else None
                 )
                 img = rgb_img
-                
+
             if img.mode == "P" and output_format not in ["png", "gif"]:
                 img = img.convert("RGB")
-                
+
             save_kwargs: dict[str, Any] = {"quality": quality, "optimize": True}
-            
+
             if output_format in ["jpg", "jpeg"]:
                 save_kwargs["format"] = "JPEG"
             elif output_format == "png":
-                save_kwargs["format"] = "PNG",
+                save_kwargs["format"] = ("PNG",)
                 save_kwargs.pop("quality")
             elif output_format == "webp":
                 save_kwargs["format"] = "WEBP"
@@ -129,11 +127,15 @@ class ImageProcessor:
                 save_kwargs["format"] = output_format.upper()
 
             img.save(self.output_path, **save_kwargs)
-        
+
         return self.output_path
-    
-    
-    def compress_image(self, quality: int = 85, max_width: Optional[int] = None, max_height: Optional[int] = None) -> Path:
+
+    def compress_image(
+        self,
+        quality: int = 85,
+        max_width: Optional[int] = None,
+        max_height: Optional[int] = None,
+    ) -> Path:
         """
         Compress image file
 
@@ -147,11 +149,11 @@ class ImageProcessor:
         """
         if self.output_path is None:
             self.output_path = self._generate_output_path(None, None, None)
-            
+
         with Image.open(self.input_path) as img:
             if max_width or max_height:
                 img = self._resize_with_aspect_ratio(img, max_width, max_height)
-                
+
             save_kwargs: dict[str, Any] = {"optimize": True}
 
             if self.input_path_suffix in [".jpg", ".jpeg"]:
@@ -167,11 +169,15 @@ class ImageProcessor:
                 save_kwargs["quality"] = quality
 
             img.save(self.output_path, **save_kwargs)
-                
+
         return self.output_path
-        
-    
-    def resize_image(self, width: Optional[int] = None, height: Optional[int] = None, maintain_aspect: bool = True) -> Path:
+
+    def resize_image(
+        self,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        maintain_aspect: bool = True,
+    ) -> Path:
         """
         Resize image to specified dimensions
 
@@ -198,15 +204,14 @@ class ImageProcessor:
                     raise ValueError(
                         "Both width and height must be specified when not maintaining aspect ratio"
                     )
-        
+
             save_kwargs: dict[str, Any] = {"optimize": True}
             if self.input_path_suffix in [".jpg", ".jpeg"]:
                 save_kwargs["quality"] = 95
-            
+
             img.save(self.output_path, **save_kwargs)
 
         return self.output_path
-    
 
     def rotate_image(self, angle: int, expand: bool = True) -> Path:
         """
@@ -230,4 +235,3 @@ class ImageProcessor:
             rotated.save(self.output_path, optimize=True)
 
         return self.output_path
-        

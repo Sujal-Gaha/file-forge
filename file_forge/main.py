@@ -60,9 +60,9 @@ def convert_image(
         ) as progress:
             progress.add_task(description="Converting image...", total=None)
             image = ImageProcessor(input_file, output_file)
-            
+
             result_path = image.convert_image(output_format, quality)
-            
+
         console.print(f"[green]✓[/green] Image converted successfully: {result_path}")
 
     except Exception as e:
@@ -101,7 +101,7 @@ def compress_image(
         ) as progress:
             progress.add_task(description="Compressing image...", total=None)
             image = ImageProcessor(input_file, output_file)
- 
+
             result_path = image.compress_image(quality, max_width, max_height)
 
         compressed_size = result_path.stat().st_size

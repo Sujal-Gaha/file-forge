@@ -203,7 +203,7 @@ mypy file_forge/
 
 ## Roadmap
 
-- [ ] Image format conversion
+- [x] Image format conversion
 - [ ] Video format conversion
 - [ ] Audio format conversion
 - [ ] Batch processing for multiple files

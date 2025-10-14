@@ -1,10 +1,12 @@
+from PIL import Image
 import typer
 from pathlib import Path
 from typing import Optional
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
-from file_forge.converters import image, document
+from file_forge.converters import document
+from file_forge.converters.image import ImageProcessor
 
 app = typer.Typer(
     name="file-forge",
@@ -13,11 +15,9 @@ app = typer.Typer(
 )
 console = Console()
 
-# Image commands
 image_app = typer.Typer(help="Image processing and conversion commands")
 app.add_typer(image_app, name="image")
 
-# Document commands
 doc_app = typer.Typer(help="Document conversion commands")
 app.add_typer(doc_app, name="doc")
 
@@ -59,10 +59,10 @@ def convert_image(
             console=console,
         ) as progress:
             progress.add_task(description="Converting image...", total=None)
-            result_path = image.convert_image(
-                input_file, output_format, output_file, quality
-            )
-
+            image = ImageProcessor(input_file, output_file)
+            
+            result_path = image.convert_image(output_format, quality)
+            
         console.print(f"[green]✓[/green] Image converted successfully: {result_path}")
 
     except Exception as e:
@@ -100,9 +100,9 @@ def compress_image(
             console=console,
         ) as progress:
             progress.add_task(description="Compressing image...", total=None)
-            result_path = image.compress_image(
-                input_file, quality, output_file, max_width, max_height
-            )
+            image = ImageProcessor(input_file, output_file)
+ 
+            result_path = image.compress_image(quality, max_width, max_height)
 
         compressed_size = result_path.stat().st_size
         reduction = ((original_size - compressed_size) / original_size) * 100
@@ -151,9 +151,9 @@ def resize_image(
             console=console,
         ) as progress:
             progress.add_task(description="Resizing image...", total=None)
-            result_path = image.resize_image(
-                input_file, width, height, output_file, maintain_aspect
-            )
+            image = ImageProcessor(input_file, output_file)
+
+            result_path = image.resize_image(width, height, maintain_aspect)
 
         console.print(f"[green]✓[/green] Image resized successfully: {result_path}")
 

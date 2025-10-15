@@ -87,7 +87,7 @@ class ImageProcessor:
         Convert image to a different format
 
         Args:
-            output_path: Optional output path (ex: jpg, png, webp, etc.)
+            output_format: Target format (jpg, png, webp)
             quality: Image quality (1-100) (default: 95)
 
         Returns:
@@ -218,9 +218,7 @@ class ImageProcessor:
         Rotate image by specified angle
 
         Args:
-            input_path: Path to input image
             angle: Rotation angle in degrees (positive = counter-clockwise)
-            output_path: Optional output path
             expand: Whether to expand image to fit rotated content
 
         Returns:

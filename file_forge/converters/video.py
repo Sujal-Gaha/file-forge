@@ -4,11 +4,31 @@ from moviepy import VideoFileClip
 
 
 class VideoProcessor:
-    def __init__(self, input_path: Path, output_path: Optional[Path] = None):
+    def __init__(self, input_path: Path, output_path: Optional[Path] = None) -> None:
+        """
+        Initialize VideoProcessor
+
+        Args:
+            input_path: Path to input image
+            output_path: Optional output path
+
+        Returns:
+            None
+        """
         self.input_path = input_path
         self.output_path = output_path
 
     def convert(self, output_format: str, quality: int = 95) -> Path:
+        """
+        Convert video to a different format
+
+        Args:
+            output_format: Target format (mp4, mov, mkv)
+            quality: Video quality (1-100) (default: 95)
+
+        Returns:
+            Path to converted video
+        """
         output_format = output_format.lower().replace(".", "")
 
         if self.output_path is None:

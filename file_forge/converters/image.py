@@ -82,7 +82,7 @@ class ImageProcessor:
         else:
             return self.input_path.parent / f"{stem}_compressed{suffix}"
 
-    def convert_image(self, output_format: str, quality: int = 95) -> Path:
+    def convert(self, output_format: str, quality: int = 95) -> Path:
         """
         Convert image to a different format
 
@@ -130,7 +130,7 @@ class ImageProcessor:
 
         return self.output_path
 
-    def compress_image(
+    def compress(
         self,
         quality: int = 85,
         max_width: Optional[int] = None,
@@ -172,7 +172,7 @@ class ImageProcessor:
 
         return self.output_path
 
-    def resize_image(
+    def resize(
         self,
         width: Optional[int] = None,
         height: Optional[int] = None,

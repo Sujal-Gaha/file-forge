@@ -65,7 +65,7 @@ def convert_image(
             progress.add_task(description="Converting image...", total=None)
             image = ImageProcessor(input_file, output_file)
 
-            result_path = image.convert_image(output_format, quality)
+            result_path = image.convert(output_format, quality)
 
         console.print(f"[green]✓[/green] Image converted successfully: {result_path}")
 
@@ -106,7 +106,7 @@ def compress_image(
             progress.add_task(description="Compressing image...", total=None)
             image = ImageProcessor(input_file, output_file)
 
-            result_path = image.compress_image(quality, max_width, max_height)
+            result_path = image.compress(quality, max_width, max_height)
 
         compressed_size = result_path.stat().st_size
         reduction = ((original_size - compressed_size) / original_size) * 100
@@ -157,7 +157,7 @@ def resize_image(
             progress.add_task(description="Resizing image...", total=None)
             image = ImageProcessor(input_file, output_file)
 
-            result_path = image.resize_image(width, height, maintain_aspect)
+            result_path = image.resize(width, height, maintain_aspect)
 
         console.print(f"[green]✓[/green] Image resized successfully: {result_path}")
 
@@ -188,7 +188,7 @@ def convert_document(
             progress.add_task(description="Converting document...", total=None)
             document = DocumentProcessor(input_file, output_file)
 
-            result_path = document.convert_document(output_format)
+            result_path = document.convert(output_format)
 
         console.print(
             f"[green]✓[/green] Document converted successfully: {result_path}"

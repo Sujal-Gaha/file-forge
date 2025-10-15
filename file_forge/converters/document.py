@@ -66,7 +66,7 @@ class DocumentProcessor:
         doc.save(str(output_path))
         return output_path
 
-    def convert_document(self, output_format: str) -> Path:
+    def convert(self, output_format: str) -> Path:
         """
         Convert document to a different format
 

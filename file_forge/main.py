@@ -7,6 +7,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
 from file_forge.converters.image import ImageProcessor
 from file_forge.converters.document import DocumentProcessor
+from file_forge.converters.video import VideoProcessor
 
 app = typer.Typer(
     name="file-forge",
@@ -20,6 +21,9 @@ app.add_typer(image_app, name="image")
 
 doc_app = typer.Typer(help="Document conversion commands")
 app.add_typer(doc_app, name="doc")
+
+video_app = typer.Typer(help="Video processing and conversion commands")
+app.add_typer(video_app, name="video")
 
 
 @app.command()
@@ -189,6 +193,42 @@ def convert_document(
         console.print(
             f"[green]✓[/green] Document converted successfully: {result_path}"
         )
+
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {str(e)}")
+        raise typer.Exit(1)
+
+
+@video_app.command("convert")
+def convert_video(
+    input_file: Path = typer.Argument(..., help="Input video file path"),
+    output_format: str = typer.Argument(
+        ..., help="Output format (mkv, mp4, mov, etc.)"
+    ),
+    output_file: Optional[Path] = typer.Option(
+        None, "--output", "-o", help="Output file path"
+    ),
+    quality: int = typer.Option(
+        95, "--quality", "-q", help="Video quality (1-100)", min=1, max=100
+    ),
+):
+    """Convert video to different format"""
+    try:
+        if not input_file.exists():
+            console.print(f"[red]Error:[/red] File '{input_file}' not found")
+            raise typer.Exit(1)
+
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=console,
+        ) as progress:
+            progress.add_task(description="Converting video...", total=None)
+            video = VideoProcessor(input_file, output_file)
+
+            result_path = video.convert(output_format, quality)
+
+        console.print(f"[green]✓[green] Video converted successfully: {result_path}")
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {str(e)}")
